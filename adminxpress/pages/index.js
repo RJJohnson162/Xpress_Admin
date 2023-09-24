@@ -1,30 +1,25 @@
-import { useSession, signIn, signOut } from "next-auth/react";
-import Nav from "@/components/Nav";
+import Layout from "@/components/layout";
+import { useSession } from "next-auth/react";
 
+//Layout UI model for the dashboard page of Xpress Admin
 export default function Home() {
     const { data: session } = useSession();
+    return (
+        <Layout>
+            <div className="text-violet-900 flex justify-between">
+                <h1>
+                    Hello, <b>{session?.user?.name}</b>
+                </h1>
 
-    if (!session) {
-        return (
-            <div className="bg-gradient-to-br from-emerald-400 to-cyan-900 w-screen h-screen flex items-center">
-                <div className="text-center w-full">
-                    <button
-                        onClick={() => signIn("google")}
-                        className="bg-white p-2 rounded-lg px-8"
-                    >
-                        Login with Google
-                    </button>
+                <div className="text-white flex gap-1 bg-violet-900 rounded-full pr-2">
+                    <img
+                        className="w-8 h-8 rounded-full"
+                        src={session?.user?.image}
+                        alt=""
+                    />
+                    <span className="py-1 px-1">{session?.user?.name}</span>
                 </div>
             </div>
-        );
-    }
-
-    return (
-        <div className="bg-violet-900 min-h-screen flex">
-            <Nav />
-            <div className="bg-violet-100 text-cyan-500 mt-2 mr-2 p-4 flex-grow rounded-lg">
-                Logged in {session.user.email}
-            </div>
-        </div>
+        </Layout>
     );
 }

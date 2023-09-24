@@ -1,8 +1,16 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
 
+//This the Navigation UI Model
 export default function Nav() {
-    const inactiveLink = "flex gap-1 p-1"
-    const activeLink = "flex gap-1 p-1 bg-violet-100 text-violet-900 rounded-l-lg"
+    //Default customization of Links
+    const inactiveLink = "flex gap-1 p-1";
+    const activeLink =
+        "flex gap-1 p-1 bg-violet-100 text-violet-900 rounded-l-lg";
+    //Routing setup and constant declaration
+    const router = useRouter();
+    const { pathname } = router;
+
     return (
         <aside className="text-white p-4 pr-0">
             <Link href={"/"} className="flex gap-1 p-5 mb-4 text-white">
@@ -23,8 +31,12 @@ export default function Nav() {
                 <span className="">Xpress Admin</span>
             </Link>
 
+            {/* Navigation Link section */}
             <nav className="flex flex-col gap-2 ">
-                <Link href={"/"} className={activeLink}>
+                <Link
+                    href={"/"}
+                    className={pathname === "/" ? activeLink : inactiveLink}
+                >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -41,7 +53,14 @@ export default function Nav() {
                     </svg>
                     Dashboard
                 </Link>
-                <Link href={"/"} className={inactiveLink}>
+                <Link
+                    href={"/products"}
+                    className={
+                        pathname.includes("/products")
+                            ? activeLink
+                            : inactiveLink
+                    }
+                >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -58,7 +77,12 @@ export default function Nav() {
                     </svg>
                     Product
                 </Link>
-                <Link href={"/"} className={inactiveLink}>
+                <Link
+                    href={"/orders"}
+                    className={
+                        pathname.includes("/orders") ? activeLink : inactiveLink
+                    }
+                >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -75,7 +99,14 @@ export default function Nav() {
                     </svg>
                     Order
                 </Link>
-                <Link href={"/"} className={inactiveLink}>
+                <Link
+                    href={"/settings"}
+                    className={
+                        pathname.includes("/settings")
+                            ? activeLink
+                            : inactiveLink
+                    }
+                >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"

@@ -1,3 +1,40 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Add a custom CSS rule or selector */
+input,
+textarea {
+    @apply border-2 border-cyan-400 rounded-lg w-full;
+    @apply mb-6 py-2 pl-1;
+}
+
+input:focus,
+textarea:focus {
+    @apply border-purple-500;
+}
+
+h1 {
+    @apply text-cyan-700 text-xl;
+}
+
+label {
+    @apply text-cyan-400;
+}
+
+.btn-primary {
+    @apply bg-violet-900 px-6 py-2 text-white rounded-full;
+}
+
+.btn-secondary {
+    @apply bg-gray-300 border-2 border-violet-900 text-violet-900 px-2 py-1 rounded-full;
+    -o-transition: ease-in 0.3s;
+    -webkit-transition: ease-in 0.3s;
+    -moz-transition: ease-in 0.3s;
+    -ms-transition: ease-in 0.3s;
+    transition: ease-in 0.3s;
+}
+
+.btn-secondary:hover {
+    @apply text-violet-300 border-cyan-400 border-2 bg-violet-900;
+}

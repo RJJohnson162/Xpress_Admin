@@ -1,3 +1,4 @@
+//Redirection of Authentication process to Google services
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
