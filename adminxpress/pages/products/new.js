@@ -20,6 +20,12 @@ export default function NewProduct() {
     async function createProduct(ev) {
         ev.preventDefault();
 
+        // Check if any of the required fields are empty
+        if (!title || !price) {
+            alert("Please fill in the required fields: Title and Price");
+            return;
+        }
+
         const data = {
             title,
             description,
@@ -30,12 +36,13 @@ export default function NewProduct() {
             await axios.post("/api/products", data);
             setGoToProducts(true);
         } catch (error) {
-            console.error("Failed to create product:", error);
+            // Handle the error, display an error message, or log it
+            console.error("Error creating product:", error);
         }
     }
-    //If form onSubmit, route back to products page
-    if (goToProducts) {
-        router.push("./products");
+
+    if (goToProducts){
+        return router.push('/products');
     }
 
     return (
