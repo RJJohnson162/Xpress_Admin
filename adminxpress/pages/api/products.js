@@ -1,26 +1,48 @@
 import { Product } from "@/models/Product";
 import { mongooseConnect } from "@/lib/mongoose";
+import { isAdminRequest } from "@/pages/api/auth/[...nextauth]";
 
-//Function handles the creation of new products
-export default async function handle(res, req) {
+export default async function handle(req, res) {
     const { method } = req;
     await mongooseConnect();
+    await isAdminRequest(req, res);
 
-    try {
-        if (method === "POST") {
-            const { title, description, price } = req.body;
-            const productDoc = await Product.create({
-                title,
-                description,
-                price,
-            });
-            res.json(productDoc);
+    if (method === "GET") {
+        if (req.query?.id) {
+            res.json(await Product.findOne({ _id: req.query.id }));
+        } else {
+            res.json(await Product.find());
         }
-    } catch (error) {
-        // Log the error for debugging purposes
-        console.error("Error creating product:", error);
+    }
 
-        // Send an appropriate error response to the client
-        res.status(500).json({ error: "Internal Server Error" });
+    if (method === "POST") {
+        const { title, description, price, images, category, properties } =
+            req.body;
+        const productDoc = await Product.create({
+            title,
+            description,
+            price,
+            images,
+            category,
+            properties,
+        });
+        res.json(productDoc);
+    }
+
+    if (method === "PUT") {
+        const { title, description, price, images, category, properties, _id } =
+            req.body;
+        await Product.updateOne(
+            { _id },
+            { title, description, price, images, category, properties }
+        );
+        res.json(true);
+    }
+
+    if (method === "DELETE") {
+        if (req.query?.id) {
+            await Product.deleteOne({ _id: req.query?.id });
+            res.json(true);
+        }
     }
 }

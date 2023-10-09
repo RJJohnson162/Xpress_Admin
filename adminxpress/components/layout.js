@@ -1,47 +1,50 @@
 import { useSession, signIn, signOut } from "next-auth/react";
 import Nav from "@/components/Nav";
-import { Children } from "react";
+import { useState } from "react";
+import Logo from "@/components/Logo";
 
-//This is the UI model for the content on Xpress Admin
 export default function Layout({ children }) {
+    const [showNav, setShowNav] = useState(false);
     const { data: session } = useSession();
-    //Only displayed when the user has no session in record ('The login page')
     if (!session) {
         return (
             <div className="bg-gradient-to-br from-emerald-400 to-cyan-900 w-screen h-screen flex items-center">
                 <div className="text-center w-full">
                     <button
                         onClick={() => signIn("google")}
-                        className="bg-white p-2 rounded-lg px-4"
+                        className="bg-white p-2 px-4 rounded-lg"
                     >
-                        <span className="flex text-cyan-600">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={1.5}
-                                stroke="currentColor"
-                                className="w-6 h-6 bg-cyan-600 rounded-lg text-white"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5l5.25 5.25"
-                                />
-                            </svg>
-                            Login with Google
-                        </span>
+                        Login with Google
                     </button>
                 </div>
             </div>
         );
     }
-    //Returns all the children injected into the Layout UI model Only for the relevant matching method pathname
+
     return (
-        <div className="bg-violet-900 min-h-screen flex">
-            <Nav />
-            <div className="bg-violet-100 text-cyan-500 mt-2 mr-2 p-4 flex-grow rounded-lg">
-                {children}
+        <div className="bg-primary min-h-screen ">
+            <div className="block md:hidden flex items-center p-4">
+                <button onClick={() => setShowNav(true)}>
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        className="w-6 h-6 text-white"
+                    >
+                        <path
+                            fillRule="evenodd"
+                            d="M3 6.75A.75.75 0 013.75 6h16.5a.75.75 0 010 1.5H3.75A.75.75 0 013 6.75zM3 12a.75.75 0 01.75-.75h16.5a.75.75 0 010 1.5H3.75A.75.75 0 013 12zm0 5.25a.75.75 0 01.75-.75h16.5a.75.75 0 010 1.5H3.75a.75.75 0 01-.75-.75z"
+                            clipRule="evenodd"
+                        />
+                    </svg>
+                </button>
+                <div className="flex grow justify-center mr-6">
+                    <Logo />
+                </div>
+            </div>
+            <div className="flex bg-bgGray rounded-lg">
+                <Nav show={showNav} />
+                <div className="flex-grow min-h-screen p-4">{children}</div>
             </div>
         </div>
     );
