@@ -25,6 +25,9 @@ export default function ProductForm({
     const [isUploading, setIsUploading] = useState(false);
     const [categories, setCategories] = useState([]);
     const router = useRouter();
+    const [error, setError] = useState(null);
+    const [isErrorVisible, setIsErrorVisible] = useState(false);
+
     useEffect(() => {
         axios.get("/api/categories").then((result) => {
             setCategories(result.data);
@@ -32,6 +35,13 @@ export default function ProductForm({
     }, []);
     async function saveProduct(ev) {
         ev.preventDefault();
+
+        // Validation: Check if title and price are empty
+        if (!title.trim() || !price.trim()) {
+            handleError("Title and price are required fields.");
+            return;
+        }
+
         const data = {
             title,
             description,
@@ -91,8 +101,32 @@ export default function ProductForm({
         }
     }
 
+    // Function to handle errors and display the error message
+    function handleError(errorMessage) {
+        setError(errorMessage);
+        setIsErrorVisible(true);
+    }
+
+    // Function to close the error message
+    function closeError() {
+        setIsErrorVisible(false);
+    }
+
+    // Function to handle cancel action
+    function cancel() {
+        router.push("/products"); // Redirect to the "Products" page
+    }
+
     return (
         <form onSubmit={saveProduct}>
+            {isErrorVisible && (
+                <div className="bg-red-200 text-red-800 p-2 rounded-lg mb-4 flex content-center">
+                    {error}
+                    <button className="ml-2 text-red-600 btn-red" onClick={closeError}>
+                        Close
+                    </button>
+                </div>
+            )}
             <label>Product name</label>
             <input
                 type="text"
@@ -193,9 +227,14 @@ export default function ProductForm({
                 value={price}
                 onChange={(ev) => setPrice(ev.target.value)}
             />
-            <button type="submit" className="btn-primary">
-                Save
-            </button>
+            <div className="flex gap-2">
+                <button type="submit" className="btn-primary">
+                    Save
+                </button>
+                <button type="button" onClick={cancel} className="btn-red">
+                    Cancel
+                </button>
+            </div>
         </form>
     );
 }

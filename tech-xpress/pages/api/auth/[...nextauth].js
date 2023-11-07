@@ -1,5 +1,5 @@
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
-import NextAuth, {getServerSession} from "next-auth";
+import NextAuth, { getServerSession } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import clientPromise from "@/lib/mongodb";
 
@@ -19,7 +19,18 @@ export const authOptions = {
             if (adminEmails.includes(session?.user?.email)) {
                 return session;
             } else {
-                return false;
+                return (
+                    <div className="bg-gradient-to-br from-violet-900 to-pink-900 w-screen h-screen flex items-center">
+                        <div className="text-center w-full">
+                            <button
+                                onClick={() => signIn("google")}
+                                className="bg-white p-2 px-4 rounded-lg"
+                            >
+                                Login with Google
+                            </button>
+                        </div>
+                    </div>
+                );
             }
         },
     },

@@ -1,4 +1,4 @@
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useSession, signIn } from "next-auth/react";
 import Nav from "@/components/Nav";
 import { useState } from "react";
 import Logo from "@/components/Logo";
@@ -6,6 +6,11 @@ import Logo from "@/components/Logo";
 export default function Layout({ children }) {
     const [showNav, setShowNav] = useState(false);
     const { data: session } = useSession();
+
+    const closeNav = () => {
+        setShowNav(false);
+    };
+
     if (!session) {
         return (
             <div className="bg-gradient-to-br from-emerald-400 to-cyan-900 w-screen h-screen flex items-center">
@@ -43,7 +48,7 @@ export default function Layout({ children }) {
                 </div>
             </div>
             <div className="flex bg-bgGray rounded-lg">
-                <Nav show={showNav} />
+                <Nav show={showNav} closeNav={closeNav} />
                 <div className="flex-grow min-h-screen p-4">{children}</div>
             </div>
         </div>

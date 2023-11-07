@@ -11,11 +11,11 @@ export default function Home() {
                     Hello, <b>{session?.user?.name}</b>
                 </h1>
 
-                <div className="flex bg-violet-900 gap-1 text-white rounded-full overflow-hidden">
+                <div className="flex bg-emerald-900 gap-1 text-white rounded-full overflow-hidden">
                     <img
                         src={session?.user?.image}
                         alt=""
-                        className="w-11 h-11 rounded-full border-4 border-violet-100"
+                        className="w-11 h-11 rounded-full border-2 border-violet-100"
                     />
                     <span className="px-2 pt-2"><b>{session?.user?.name}</b></span>
                 </div>
