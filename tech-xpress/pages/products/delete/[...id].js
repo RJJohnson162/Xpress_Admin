@@ -29,10 +29,10 @@ export default function DeleteProductPage() {
                 &quot;?
             </h1>
             <div className="flex gap-2 justify-center">
-                <button onClick={deleteProduct} className="btn-red">
+                <button onClick={deleteProduct} className="btn-default">
                     Yes
                 </button>
-                <button className="btn-default" onClick={goBack}>
+                <button className="btn-red" onClick={goBack}>
                     NO
                 </button>
             </div>

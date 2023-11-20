@@ -58,17 +58,17 @@ table.basic a {
     -o-transition: ease-in 0.3s;
 }
 .btn-red {
-    @apply bg-red-200 text-red-600 shadow-sm rounded-full border-2 border-red-600;
+    @apply bg-red-100 text-red-600 shadow-sm rounded-full border-2 border-red-600;
 }
 .btn-red:hover {
     @apply bg-red-600 text-white;
 }
 
 .btn-default {
-    @apply bg-green-300 text-cyan-700 border-2 border-cyan-500 shadow-sm rounded-full;
+    @apply bg-green-200 text-green-700 border-2 border-green-700 shadow-sm rounded-full;
 }
 .btn-default:hover {
-    @apply bg-green-600 hover:text-white;
+    @apply bg-teal-600 hover:text-white;
 }
 /* Change the width and height of the scrollbar */
 ::-webkit-scrollbar {
@@ -92,4 +92,18 @@ table.basic a {
 .glass{
     backdrop-filter: blur(2px);
     background-color: #011b0dce;
+}
+
+.hover{
+    cursor: pointer;
+    transition: .5s;
+    -webkit-transition: .5s;
+    -moz-transition: .5s;
+    -ms-transition: .5s;
+    -o-transition: .5s;
+}
+.hover:hover{
+    background-color: white;
+    color: teal;
+    border: 1px solid teal;
 }

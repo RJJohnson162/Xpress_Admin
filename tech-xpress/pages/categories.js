@@ -9,6 +9,9 @@ function Categories({ swal }) {
     const [parentCategory, setParentCategory] = useState("");
     const [categories, setCategories] = useState([]);
     const [properties, setProperties] = useState([]);
+    const [error, setError] = useState(null);
+    const [isErrorVisible, setIsErrorVisible] = useState(false);
+
     useEffect(() => {
         fetchCategories();
     }, []);
@@ -19,6 +22,12 @@ function Categories({ swal }) {
     }
     async function saveCategory(ev) {
         ev.preventDefault();
+
+        if (!name.trim()){
+            handleError("Category Name is a required field!!");
+            return;
+        }
+
         const data = {
             name,
             parentCategory,
@@ -93,9 +102,30 @@ function Categories({ swal }) {
             });
         });
     }
+
+    // Function to handle errors and display the error message
+    function handleError(errorMessage) {
+        setError(errorMessage);
+        setIsErrorVisible(true);
+    }
+
+    // Function to close the error message
+    function closeError() {
+        setIsErrorVisible(false);
+    }
+
     return (
         <Layout>
             <h1>Categories</h1>
+            {isErrorVisible && (
+                <div className="bg-red-100 text-red-800 p-2 rounded-lg mb-4 flex flex-col items-center content-center">
+                    {error}
+                    <button className="ml-2 text-red-600 btn-red" onClick={closeError}>
+                        Close
+                    </button>
+                </div>
+            )}
+
             <label>
                 {editedCategory
                     ? `Edit category ${editedCategory.name}`
@@ -127,7 +157,7 @@ function Categories({ swal }) {
                     <button
                         onClick={addProperty}
                         type="button"
-                        className="btn-default text-sm mb-2"
+                        className="btn-primary text-sm mb-2"
                     >
                         Add new property
                     </button>
@@ -183,12 +213,12 @@ function Categories({ swal }) {
                                 setParentCategory("");
                                 setProperties([]);
                             }}
-                            className="btn-default"
+                            className="btn-red"
                         >
                             Cancel
                         </button>
                     )}
-                    <button type="submit" className="btn-primary py-1">
+                    <button type="submit" className="btn-default py-1">
                         Save
                     </button>
                 </div>

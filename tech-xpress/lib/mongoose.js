@@ -1,19 +1,29 @@
 import mongoose from "mongoose";
 
-//Function connects Mongoose to the MongoDB
-/**
- * Connects Mongoose to a MongoDB database.
- * @returns {Promise} A promise that resolves to the mongoose.connection object if it is already connected,
- * or the result of the mongoose.connect() method if it needs to establish a new connection.
- */
-export function mongooseConnect() {
-    if (mongoose.connection.readyState === 1) {
-        // If already connected, return the mongoose.connection object as a promise
-        return mongoose.connection.asPromise();
-    } else {
-        // If not connected, retrieve the MongoDB URI from the MONGODB_URI environment variable
-        const uri = process.env.MONGODB_URI;
-        // Connect Mongoose to the MongoDB database using the retrieved URI
-        return mongoose.connect(uri);
+export async function mongooseConnect() {
+    try {
+        if (mongoose.connection.readyState === 1) {
+            return mongoose.connection.asPromise();
+        } else {
+            const uri = process.env.MONGODB_URI;
+            await mongoose.connect(uri);
+            return mongoose.connection;
+        }
+    } catch (error) {
+        console.error("Error connecting to MongoDB:", error.message);
+        throw error;
     }
 }
+
+// Event listeners for connection events
+mongoose.connection.on("connected", () => {
+    console.log("Connected to MongoDB");
+});
+
+mongoose.connection.on("error", (error) => {
+    console.error("MongoDB connection error:", error.message);
+});
+
+mongoose.connection.on("disconnected", () => {
+    console.log("Disconnected from MongoDB");
+});

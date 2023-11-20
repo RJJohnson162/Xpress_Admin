@@ -1,5 +1,5 @@
-import { BounceLoader } from "react-spinners";
+import { DotLoader } from "react-spinners";
 
 export default function Spinner() {
-    return <BounceLoader color={ primary } speedMultiplier={2} />;
+    return <DotLoader color={ "#4ade80" } speedMultiplier={2} />;
 }

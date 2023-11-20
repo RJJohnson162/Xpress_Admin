@@ -27,18 +27,25 @@ export default function ProductForm({
     const router = useRouter();
     const [error, setError] = useState(null);
     const [isErrorVisible, setIsErrorVisible] = useState(false);
+    const [formChanged, setFormChanged] = useState(false); // Flag to track form changes
 
     useEffect(() => {
         axios.get("/api/categories").then((result) => {
             setCategories(result.data);
         });
     }, []);
-    async function saveProduct(ev) {
+
+    const handleChange = () => {
+        // Set the formChanged flag to true when any form field changes
+        setFormChanged(true);
+    };
+
+    const saveProduct = async (ev) => {
         ev.preventDefault();
 
         // Validation: Check if title and price are empty
-        if (!title.trim() || !price.trim()) {
-            handleError("Title and price are required fields.");
+        if (!title.trim() || !price.toString().trim() || !category.trim()) {
+            handleError("Title, Category, and price are required fields.");
             return;
         }
 
@@ -58,7 +65,11 @@ export default function ProductForm({
             await axios.post("/api/products", data);
         }
         setGoToProducts(true);
-    }
+
+        // Reset the formChanged flag when the form is successfully submitted
+        setFormChanged(false);
+    };
+
     if (goToProducts) {
         router.push("/products");
     }
@@ -77,9 +88,11 @@ export default function ProductForm({
             setIsUploading(false);
         }
     }
+
     function updateImagesOrder(images) {
         setImages(images);
     }
+
     function setProductProp(propName, value) {
         setProductProperties((prev) => {
             const newProductProps = { ...prev };
@@ -101,6 +114,36 @@ export default function ProductForm({
         }
     }
 
+    function deleteImage(index) {
+        const imageToDelete = images[index];
+
+        // If the image is already stored in the database (has an _id property)
+        if (imageToDelete._id) {
+            // Send a request to your backend to delete the image
+            axios
+                .delete(`/api/images/${imageToDelete._id}`)
+                .then(() => {
+                    // If deletion is successful, update the state
+                    setImages((prevImages) => {
+                        const updatedImages = [...prevImages];
+                        updatedImages.splice(index, 1);
+                        return updatedImages;
+                    });
+                })
+                .catch((error) => {
+                    // Handle error if deletion fails
+                    console.error("Error deleting image:", error);
+                });
+        } else {
+            // If the image is not yet stored in the database, simply update the state
+            setImages((prevImages) => {
+                const updatedImages = [...prevImages];
+                updatedImages.splice(index, 1);
+                return updatedImages;
+            });
+        }
+    }
+
     // Function to handle errors and display the error message
     function handleError(errorMessage) {
         setError(errorMessage);
@@ -117,12 +160,23 @@ export default function ProductForm({
         router.push("/products"); // Redirect to the "Products" page
     }
 
+    // Check if we are in edit mode based on the current path
+    const isEditMode = router.pathname.includes("/products/edit");
+
     return (
         <form onSubmit={saveProduct}>
+            {formChanged && ( // Display warning message when changes have been made
+                <div className="bg-teal-700 border flex-col w-3/5 text-white rounded-lg mb-4 flex items-center justify-center p-2">
+                    You have unsaved changes.
+                </div>
+            )}
             {isErrorVisible && (
-                <div className="bg-red-200 text-red-800 p-2 rounded-lg mb-4 flex content-center">
+                <div className="bg-red-100 border flex-col w-4/5 text-red-800 p-2 rounded-lg mb-4 flex items-center justify-center">
                     {error}
-                    <button className="ml-2 text-red-600 btn-red" onClick={closeError}>
+                    <button
+                        className="ml-2 mt-3 w-1/5 text-red-600 btn-red"
+                        onClick={closeError}
+                    >
                         Close
                     </button>
                 </div>
@@ -132,12 +186,18 @@ export default function ProductForm({
                 type="text"
                 placeholder="product name"
                 value={title}
-                onChange={(ev) => setTitle(ev.target.value)}
+                onChange={(ev) => {
+                    setTitle(ev.target.value);
+                    handleChange(); // Track form changes
+                }}
             />
             <label>Category</label>
             <select
                 value={category}
-                onChange={(ev) => setCategory(ev.target.value)}
+                onChange={(ev) => {
+                    setCategory(ev.target.value);
+                    handleChange(); // Track form changes
+                }}
             >
                 <option value="">Uncategorized</option>
                 {categories.length > 0 &&
@@ -156,9 +216,10 @@ export default function ProductForm({
                         <div>
                             <select
                                 value={productProperties[p.name]}
-                                onChange={(ev) =>
-                                    setProductProp(p.name, ev.target.value)
-                                }
+                                onChange={(ev) => {
+                                    setProductProp(p.name, ev.target.value);
+                                    handleChange(); // Track form changes
+                                }}
                             >
                                 {p.values.map((v) => (
                                     <option key={v} value={v}>
@@ -177,12 +238,18 @@ export default function ProductForm({
                     setList={updateImagesOrder}
                 >
                     {!!images?.length &&
-                        images.map((link) => (
+                        images.map((link, index) => (
                             <div
                                 key={link}
-                                className="h-24 bg-white p-4 shadow-sm rounded-sm border border-gray-200"
+                                className="h-24 bg-teal-600 p-4 shadow-sm flex flex-col gap-1 items-center border border-gray-200 mb-4 mt-2 rounded-md"
                             >
                                 <img src={link} alt="" className="rounded-lg" />
+                                <button
+                                    onClick={() => deleteImage(index)}
+                                    className="text-red-100 border bg-teal-600 rounded-md p-1 hover"
+                                >
+                                    Delete
+                                </button>
                             </div>
                         ))}
                 </ReactSortable>
@@ -191,7 +258,7 @@ export default function ProductForm({
                         <Spinner />
                     </div>
                 )}
-                <label className="w-24 h-24 cursor-pointer text-center flex flex-col items-center justify-center text-sm gap-1 text-primary rounded-sm bg-white shadow-sm border border-primary">
+                <label className="w-24 h-24 cursor-pointer text-center flex mt-2 flex-col items-center justify-center text-sm gap-1 text-primary rounded-sm bg-white shadow-sm border border-primary">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -214,18 +281,25 @@ export default function ProductForm({
                     />
                 </label>
             </div>
+
             <label>Description</label>
             <textarea
                 placeholder="description"
                 value={description}
-                onChange={(ev) => setDescription(ev.target.value)}
+                onChange={(ev) => {
+                    setDescription(ev.target.value);
+                    handleChange(); // Track form changes
+                }}
             />
-            <label>Price (in USD)</label>
+            <label>Price (in KES)</label>
             <input
                 type="number"
                 placeholder="price"
                 value={price}
-                onChange={(ev) => setPrice(ev.target.value)}
+                onChange={(ev) => {
+                    setPrice(ev.target.value);
+                    handleChange(); // Track form changes
+                }}
             />
             <div className="flex gap-2">
                 <button type="submit" className="btn-primary">
