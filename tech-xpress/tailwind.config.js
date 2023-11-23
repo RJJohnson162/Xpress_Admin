@@ -12,6 +12,9 @@ module.exports = {
                 highlight: "#ede9fe",
                 bgGray: "#ede9fe",
             },
+            backgroundImage: {
+                "hero-pattern": "url('./pages/index-Image.jpg')",
+            },
         },
     },
     plugins: [],

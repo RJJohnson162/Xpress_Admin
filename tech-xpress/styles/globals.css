@@ -94,6 +94,12 @@ table.basic a {
     background-color: #011b0dce;
 }
 
+.pic-outline{
+    background-image: url(/tech-xpress/pages/index-Image.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
 .hover{
     cursor: pointer;
     transition: .5s;
@@ -106,4 +112,9 @@ table.basic a {
     background-color: white;
     color: teal;
     border: 1px solid teal;
+}
+
+.float{
+    box-shadow: 5px 10px 15px #9c999888, 5px 5px 10px #b8b4b4a4,
+    -5px -5px 15px #9c999888, -5px -5px 10px #b8b4b4a4;
 }
